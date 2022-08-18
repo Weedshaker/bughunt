@@ -1,0 +1,2 @@
+# bughunt
+coop decentral bughunt
