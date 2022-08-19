@@ -30,7 +30,7 @@ var trackersAnnounceURLs = [
 ]
 
 // This 'myApp' is called identifier and should be unique to your app
-var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567147')
+var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567148')
 
 // If a tracker connection was successful
 p2pt.on('trackerconnect', (tracker, stats) => {
@@ -46,9 +46,9 @@ p2pt.on('peerconnect', (peer) => {
   self.peers.push(peer)
   peer.sst_element = document.createElement('span')
   peer.sst_element.style.position = 'absolute'
-  peer.sst_element.style.backgroundColor = getColorCode()
-  peer.sst_element.style.width = '10px'
-  peer.sst_element.style.height = '10px'
+  peer.sst_element.style.backgroundColor = randomHexColor()
+  peer.sst_element.style.minWidth = '10px'
+  peer.sst_element.style.minHeight = '10px'
   document.body.appendChild(peer.sst_element)
   /************************************************************************************/
   log('New Peer ! : ' + peer.id + '. Sending Hi')
@@ -60,6 +60,14 @@ p2pt.on('peerconnect', (peer) => {
   })
 })
 
+/************************************************************************************/
+p2pt.on('peerclose', (peer) => {
+  if (peer.sst_element) peer.sst_element.remove()
+})
+/************************************************************************************/
+
+let requestAnimationFrameRecId = null
+let msgObject = null
 // If message received from peer
 p2pt.on('msg', (peer, msg) => {
   /*log(`Got message from ${peer.id} : ${msg}`)
@@ -69,10 +77,16 @@ p2pt.on('msg', (peer, msg) => {
     })
   }*/
   try {
-    const msgObject = JSON.parse(msg)
-    console.log('msg', msgObject);
-    peer.sst_element.style.left = msgObject.x + 'px'
-    peer.sst_element.style.top = msgObject.y + 'px'
+    if (msg) msgObject = JSON.parse(msg)
+    if (requestAnimationFrameRecId === null) {
+      requestAnimationFrameRecId = self.requestAnimationFrame(timeStamp => {
+        peer.sst_element.style.left = msgObject.x + 'px'
+        peer.sst_element.style.top = msgObject.y + 'px'
+        peer.sst_element.style.backgroundColor = msgObject.color
+        peer.sst_element.textContent = msgObject.name
+        requestAnimationFrameRecId = null
+      })
+    }
   } catch (error) {
     
   }
@@ -82,31 +96,61 @@ log('P2PT started. My peer id : ' + p2pt._peerId)
 p2pt.start()
 
 /* *************************************************************************************** */
+const name = localStorage.getItem('name') ? localStorage.getItem('name') : prompt('enter name') || 'user' + Math.round(Math.random() *10)
+localStorage.setItem('name', name)
+const color = localStorage.getItem('color') ? localStorage.getItem('color') : prompt('enter color') || randomHexColor()
+localStorage.setItem('color', color)
 const cursor = document.createElement('span')
 cursor.style.position = 'absolute'
-cursor.style.backgroundColor = getColorCode()
-cursor.style.width = '10px'
-cursor.style.height = '10px'
+cursor.style.backgroundColor = color
+cursor.style.minWidth = '10px'
+cursor.style.minHeight = '10px'
+cursor.textContent = name
 document.body.appendChild(cursor)
+let requestAnimationFrameId = null
+let coordinates = [0, 0]
 self.addEventListener('mousemove', event => {
-  if (!event.offsetX) return
-  if (!event.offsetY) return
-  self.peers.forEach(peer => this.p2pt.send(peer, JSON.stringify({x: event.offsetX, y: event.offsetY})))
-  cursor.style.left = event.offsetX + 'px'
-  cursor.style.top = event.offsetY + 'px'
+  const x = Number(event.offsetX)
+  const y = Number(event.offsetY)
+  if (x < 2 || x * 10 < coordinates[0]) return // there is some issue with the mousemove event giving back low values like a glitch
+  if (y < 2 || y * 10 < coordinates[1]) return // there is some issue with the mousemove event giving back low values like a glitch
+  coordinates = [x, y]
+  if (requestAnimationFrameId === null) requestAnimationFrameId = self.requestAnimationFrame(timeStamp => {
+    self.peers.forEach(peer => this.p2pt.send(peer, JSON.stringify({
+      x: coordinates[0],
+      y: coordinates[1],
+      color: cursor.style.backgroundColor,
+      name: name
+    })))
+    cursor.style.left = coordinates[0] + 'px'
+    cursor.style.top = coordinates[1] + 'px'
+    requestAnimationFrameId = null
+  })
 })
 console.log('changed', this.p2pt);
 self.addEventListener('beforeunload', event => p2pt.destroy())
 
-// https://www.tutorialspoint.com/random-color-generator-in-javascript
-function getColorCode() {
-      var makeColorCode = '0123456789ABCDEF';
-      var code = '#';
-      for (var count = 0; count < 6; count++) {
-         code =code+ makeColorCode[Math.floor(Math.random() * 16)];
-      }
-      return code;
-   }
+// https://code.tutsplus.com/tutorials/how-to-code-a-random-color-generator-in-javascript--cms-39861
+function randomInteger(max) {
+    return Math.floor(Math.random()*(max + 1));
+}
+
+function randomRgbColor() {
+    let r = randomInteger(255);
+    let g = randomInteger(255);
+    let b = randomInteger(255);
+    return [r,g,b];
+}
+
+function randomHexColor() {
+    let [r,g,b] =randomRgbColor();
+
+    let hr = r.toString(16).padStart(2, '0');
+    let hg = g.toString(16).padStart(2, '0');
+    let hb = b.toString(16).padStart(2, '0');
+
+    return "#" + hr + hg + hb;
+}
     </script>
 </body>
 </html>
