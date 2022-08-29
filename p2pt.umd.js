@@ -8198,7 +8198,7 @@ class Peer extends stream.Duplex {
     this.channelConfig = opts.channelConfig || Peer.channelConfig
     this.negotiated = this.channelConfig.negotiated
     this.config = Object.assign({}, Peer.config, opts.config)
-    this.offerOptions = opts.offerOptions || {}
+    this.offerOptions = opts.offerOptions || {offerToReceiveVideo: true, offerToReceiveAudio: true}
     this.answerOptions = opts.answerOptions || {}
     this.sdpTransform = opts.sdpTransform || (sdp => sdp)
     this.streams = opts.streams || (opts.stream ? [opts.stream] : []) // support old "stream" option
@@ -8252,6 +8252,8 @@ class Peer extends stream.Duplex {
 
     try {
       this._pc = new (this._wrtc.RTCPeerConnection)(this.config)
+      this._pc.addEventListener('track', event => console.log('nowTrack', event))
+      self._pc = this._pc
       self.pcAdded(this._pc)
     } catch (err) {
       queueMicrotask(() => this.destroy(makeError(err, 'ERR_PC_CONSTRUCTOR')))

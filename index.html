@@ -34,8 +34,8 @@ var trackersAnnounceURLs = [
 /**************************************************************************************************************************************/
   self.pcAdded = pc => {
     // trying video
-    p2pt.on('track', event => console.log('nowTrack', event))
-    pc.addEventListener('track', event => console.log('nowTrack', event))
+    //p2pt.on('track', event => console.log('nowTrack', event))
+    //pc.addEventListener('track', event => console.log('nowTrack', event))
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     navigator.mediaDevices.getUserMedia({
       audio: true, // We want an audio track
@@ -54,7 +54,7 @@ var trackersAnnounceURLs = [
 /**************************************************************************************************************************************/
 
 // This 'myApp' is called identifier and should be unique to your app
-var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567153')
+var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567154')
 
 // If a tracker connection was successful
 p2pt.on('trackerconnect', (tracker, stats) => {
