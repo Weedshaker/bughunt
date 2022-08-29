@@ -27,12 +27,12 @@ var trackersAnnounceURLs = [
   "wss://tracker.sloppyta.co:443/announce",
   "wss://tracker.novage.com.ua:443/announce",
   "wss://tracker.btorrent.xyz:443/announce",
-  /*"wss://tracker.files.fm:7073/announce",
-  "wss://spacetradersapi-chatbox.herokuapp.com:443/announce",*/
+  "wss://tracker.files.fm:7073/announce",
+  "wss://spacetradersapi-chatbox.herokuapp.com:443/announce",
 ]
 
 // This 'myApp' is called identifier and should be unique to your app
-var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567150')
+var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567151')
 
 // If a tracker connection was successful
 p2pt.on('trackerconnect', (tracker, stats) => {
