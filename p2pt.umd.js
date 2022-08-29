@@ -8300,6 +8300,7 @@ class Peer extends stream.Duplex {
       })
     }
     this._pc.ontrack = event => {
+      console.log('ontrack', event);
       this._onTrack(event)
     }
 
