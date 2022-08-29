@@ -9,7 +9,7 @@
     <h6>https://github.com/subins2000/p2pt</h6>
     <p>try: p2pt.send(peers[0], 'odoooo')</p>
     <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/subins2000/p2pt/dist/p2pt.umd.js"></script>-->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/subins2000/p2pt/dist/p2pt.umd.js"></script>
+    <script type="text/javascript" src="./p2pt.umd.js"></script>
     <div id="log"></div>
     <script>
 let logger = document.getElementById('log');
@@ -42,7 +42,6 @@ var trackersAnnounceURLs = [
     })
     .then(localStream => {
       const video = document.getElementById("received_video")
-      console.log('changed', localStream, video);
       video.srcObject = localStream;
       video.onloadedmetadata = () => {
         video.play();
