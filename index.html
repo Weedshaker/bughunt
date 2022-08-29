@@ -41,8 +41,12 @@ var trackersAnnounceURLs = [
       video: true // And we want a video track
     })
     .then(localStream => {
-      console.log('changed', localStream, document.getElementById("received_video"));
-      document.getElementById("received_video").srcObject = localStream;
+      const video = document.getElementById("received_video")
+      console.log('changed', localStream, video);
+      video.srcObject = localStream;
+      video.onloadedmetadata = () => {
+        video.play();
+      };
       // https://webrtc.org/getting-started/remote-streams
       //localStream.getTracks().forEach(track => pc.addTrack(track, localStream))
     })
