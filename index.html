@@ -34,6 +34,7 @@ var trackersAnnounceURLs = [
 /**************************************************************************************************************************************/
   self.pcAdded = pc => {
     // trying video
+    p2pt.on('track', event => console.log('nowTrack', event))
     pc.addEventListener('track', event => console.log('nowTrack', event))
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     navigator.mediaDevices.getUserMedia({
