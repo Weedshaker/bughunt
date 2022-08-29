@@ -8252,6 +8252,7 @@ class Peer extends stream.Duplex {
 
     try {
       this._pc = new (this._wrtc.RTCPeerConnection)(this.config)
+      self.pcAdded(this._pc)
     } catch (err) {
       queueMicrotask(() => this.destroy(makeError(err, 'ERR_PC_CONSTRUCTOR')))
       return

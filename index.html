@@ -34,7 +34,7 @@ var trackersAnnounceURLs = [
 /**************************************************************************************************************************************/
   self.pcAdded = pc => {
     // trying video
-    //pc.addEventListener('track', event => console.log('nowTrack', event))
+    pc.addEventListener('track', event => console.log('nowTrack', event))
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     navigator.mediaDevices.getUserMedia({
       audio: true, // We want an audio track
@@ -47,10 +47,9 @@ var trackersAnnounceURLs = [
         video.play();
       };
       // https://webrtc.org/getting-started/remote-streams
-      //localStream.getTracks().forEach(track => pc.addTrack(track, localStream))
+      localStream.getTracks().forEach(track => pc.addTrack(track, localStream))
     })
   }
-  self.pcAdded()
 /**************************************************************************************************************************************/
 
 // This 'myApp' is called identifier and should be unique to your app
