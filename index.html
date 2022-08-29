@@ -31,6 +31,25 @@ var trackersAnnounceURLs = [
   "wss://spacetradersapi-chatbox.herokuapp.com:443/announce",
 ]
 
+/**************************************************************************************************************************************/
+  self.pcAdded = pc => {
+    // trying video
+    //pc.addEventListener('track', event => console.log('nowTrack', event))
+    // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+    navigator.mediaDevices.getUserMedia({
+      audio: true, // We want an audio track
+      video: true // And we want a video track
+    })
+    .then(localStream => {
+      console.log('changed', localStream, document.getElementById("received_video"));
+      document.getElementById("received_video").srcObject = localStream;
+      // https://webrtc.org/getting-started/remote-streams
+      //localStream.getTracks().forEach(track => pc.addTrack(track, localStream))
+    })
+  }
+  self.pcAdded()
+/**************************************************************************************************************************************/
+
 // This 'myApp' is called identifier and should be unique to your app
 var p2pt = new P2PT(trackersAnnounceURLs, 'ruediRaschle3567151')
 
@@ -154,5 +173,6 @@ function randomHexColor() {
     return "#" + hr + hg + hb;
 }
     </script>
+    <video id=received_video></video>
 </body>
 </html>
